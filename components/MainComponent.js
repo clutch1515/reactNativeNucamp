@@ -2,25 +2,23 @@ import React, { Component } from 'react';
 import Home from './HomeComponent';
 import Directory from './DirectoryComponent';
 import CampsiteInfo from './CampsiteInfoComponent';
-import About from './AboutComponent'
-import Contact from './ContactComponent'
+import About from './AboutComponent';
+import Contact from './ContactComponent';
 import Reservation from './ReservationComponent';
 import { View, Platform, StyleSheet, Text, ScrollView, Image } from 'react-native';
 import { createStackNavigator, createDrawerNavigator,
     DrawerItems } from 'react-navigation';
-import { Icon } from 'react-native';
+import { Icon } from 'react-native-elements';
 import SafeAreaView from 'react-native-safe-area-view';
 import { connect } from 'react-redux';
 import { fetchCampsites, fetchComments, fetchPromotions,
     fetchPartners } from '../redux/ActionCreators';
-
 const mapDispatchToProps = {
     fetchCampsites,
     fetchComments,
     fetchPromotions,
     fetchPartners
 };
-
 const DirectoryNavigator = createStackNavigator(
     {
         Directory: { 
@@ -49,7 +47,28 @@ const DirectoryNavigator = createStackNavigator(
         }
     }
 );
-
+const HomeNavigator = createStackNavigator(
+    {
+        Home: { screen: Home }
+    },
+    {
+        navigationOptions: ({navigation}) => ({
+            headerStyle: {
+                backgroundColor: '#5637DD'
+            },
+            headerTintColor: '#fff',
+            headerTitleStyle: {
+                color: '#fff'
+            },
+            headerLeft: <Icon
+                name='home'
+                type='font-awesome'
+                iconStyle={styles.stackIcon}
+                onPress={() => navigation.toggleDrawer()}
+            />
+        })
+    }
+);
 const AboutNavigator = createStackNavigator(
     {
         About: { screen: About }
@@ -72,33 +91,9 @@ const AboutNavigator = createStackNavigator(
         })
     }
 );
-
-const HomeNavigator = createStackNavigator(
-    {
-        Home: { screen: Home },
-    },
-    {
-        navigationOptions: ({navigation}) => ({
-            headerStyle: {
-                backgroundColor: '#5637DD'
-            },
-            headerTintColor: '#fff',
-            headerTitleStyle: {
-                color: '#fff'
-            },
-            headerLeft: <Icon
-                name='home'
-                type='font-awesome'
-                iconStyle={styles.stackIcon}
-                onPress={() => navigation.toggleDrawer()}
-            />
-        })
-    }
-);
-
 const ContactNavigator = createStackNavigator(
     {
-        Contact: { screen: Contact},
+        Contact: { screen: Contact }
     },
     {
         navigationOptions: ({navigation}) => ({
@@ -118,7 +113,6 @@ const ContactNavigator = createStackNavigator(
         })
     }
 );
-
 const ReservationNavigator = createStackNavigator(
     {
         Reservation: { screen: Reservation }
@@ -141,10 +135,9 @@ const ReservationNavigator = createStackNavigator(
         })
     }
 );
-
 const CustomDrawerContentComponent = props => (
     <ScrollView>
-        <SafeAreaView 
+        <SafeAreaView
             style={styles.container}
             forceInset={{top: 'always', horizontal: 'never'}}>
             <View style={styles.drawerHeader}>
@@ -159,7 +152,6 @@ const CustomDrawerContentComponent = props => (
         </SafeAreaView>
     </ScrollView>
 );
-
 const MainNavigator = createDrawerNavigator(
     {
         Home: {
@@ -236,16 +228,13 @@ const MainNavigator = createDrawerNavigator(
         contentComponent: CustomDrawerContentComponent
     }
 );
-
 class Main extends Component {
-
     componentDidMount() {
         this.props.fetchCampsites();
         this.props.fetchComments();
         this.props.fetchPromotions();
         this.props.fetchPartners();
     }
-    
     render() {
         return (
             <View style={{
@@ -257,10 +246,9 @@ class Main extends Component {
         );
     }
 }
-
 const styles = StyleSheet.create({
     container: {
-        flex: 1,
+        flex: 1
     },
     drawerHeader: {
         backgroundColor: '#5637DD',
@@ -286,5 +274,4 @@ const styles = StyleSheet.create({
         fontSize: 24
     }
 });
-
 export default connect(null, mapDispatchToProps)(Main);

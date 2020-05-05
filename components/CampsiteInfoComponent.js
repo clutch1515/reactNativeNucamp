@@ -142,13 +142,24 @@ class CampsiteInfo extends Component {
                         onRequestClose={() => this.toggleModal()}>
                         <View style={styles.modal}>
                             <Rating 
-                                /*  showRating
-                                 startingValue
-                                 imageSize
-                                 onFinishRating
-                                 style */
+                                showRating
+                                 startingValue={this.rating}
+                                 imageSize={40}
+                                 onFinishRating={(rating)=>this.setState({rating: rating})}
+                                 style={{paddingVertical: 10}}
                             />
-                            <Input />
+                            <Input 
+                                placeholder='Author'
+                                leftIcon={
+                                    <Icon 
+                                        name='comment-o'
+                                        
+                                    />
+                                }
+                                leftIconContainerStyle={{paddingRight: '10'}}
+                                onChangeText={(comment) => this.setState({ comment: comment })}
+                                value
+                            />
                             <View style={{margin: 10}} >
                                 <Button
                                     onPress={() => {
