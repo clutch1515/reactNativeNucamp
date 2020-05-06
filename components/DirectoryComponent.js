@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Component } from 'react';
 import Loading from './LoadingComponent';
 import { View, FlatList } from 'react-native';
 import { ListItem } from 'react-native-elements';
@@ -12,19 +12,28 @@ const mapStateToProps = state => {
     };
 };
 
-function Directory(props) {
 
-    const renderDirectoryItem = ({item}) => {
-        return (
-            <Tile
-                title={item.name}
-                caption={item.description}
-                featured
-                onPress={() => navigate('CampsiteInfo', { campsiteId: item.id })}
-                imageSrc={{uri: baseUrl + item.image}}
-            />
-        );
+
+class Directory extends Component {
+
+    static navigationOptions = {
+        title: 'Directory'
     };
+    
+    render() {
+        const { navigate } = this.props.navigation;
+        const renderDirectoryItem = ({item}) => {
+            return(
+                <Tile
+                    title={item.name}
+                    caption={item.description}
+                    featured
+                    onPress={() => navigate('CampsiteInfo', {campsiteId: item.id})}
+                    imageSrc={{uri: baseUrl + item.image}}
+            />
+            );
+        };
+
 
     if (this.props.campsites.isLoading) {
         return <Loading />;
@@ -43,7 +52,8 @@ function Directory(props) {
             renderItem={renderDirectoryItem}
             keyExtractor={item => item.id.toString()}
         />
-    );
+        );
+    }
 }
 
 export default connect(mapStateToProps)(Directory);

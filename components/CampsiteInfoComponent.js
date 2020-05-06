@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
-import { Text, View, ScrollView, FlatList, Modal, Button, StyleSheet, Form, LocalForm } from 'react-native';
-import { Card } from 'react-native-elements';
+import { Text, View, ScrollView, FlatList, Modal, Button, StyleSheet, Form, LocalForm} from 'react-native';
+import { Card, Icon, Rating, Input } from 'react-native-elements';
 import { connect } from 'react-redux';
 import { baseUrl } from '../shared/baseUrl';
-import { postFavorite } from '../redux/ActionCreators';
+import { postFavorite, postComment } from '../redux/ActionCreators';
 
 const mapStateToProps = state => {
     return {
@@ -14,10 +14,11 @@ const mapStateToProps = state => {
 };
 
 const mapDispatchToProps = {
-    postFavorite: campsiteId => (postFavorite(campsiteId))
+    postFavorite: campsiteId => (postFavorite(campsiteId)),
+    postComment: (campsiteId, rating, author, text ) => (postComment(campsiteId, rating, author, text))
 };
 
-function RenderCampsite({props}) {   
+function RenderCampsite(props) {   
 
     const { campsite } = props;
     
@@ -29,7 +30,7 @@ function RenderCampsite({props}) {
                 <Text style={{margin: 10}}>
                     {campsite.description}
                 </Text>
-                <View className="cardRow">
+                <View style={styles.cardRow}>
                 <Icon
                     name={props.favorite ? 'heart' : 'heart-o'}
                     type='font-awesome'
@@ -40,8 +41,8 @@ function RenderCampsite({props}) {
                         console.log('Already set as a favorite') : props.markFavorite()}
                 />
                 <Icon
-                    className="cardsItem"
-                    name={props.favorite ? 'pencil' : 'pencil-o'}
+                    style={styles.cardItem}
+                    name={'pencil'}
                     type='font-awesome'
                     color='#f50'
                     raised
@@ -105,7 +106,7 @@ class CampsiteInfo extends Component {
     }
 
     handleComment(campsiteId) {
-        /* post comment */
+        this.props.postComment(campsiteId, rating, author, text); 
         this.toggleModal();
     }
 
@@ -143,27 +144,30 @@ class CampsiteInfo extends Component {
                         <View style={styles.modal}>
                             <Rating 
                                 showRating
-                                 startingValue={this.rating}
+                                 startingValue={this.state.rating}
                                  imageSize={40}
                                  onFinishRating={(rating)=>this.setState({rating: rating})}
                                  style={{paddingVertical: 10}}
                             />
                             <Input 
                                 placeholder='Author'
-                                leftIcon={
-                                    <Icon 
-                                        name='comment-o'
-                                        
-                                    />
-                                }
+                                leftIcon={{type: 'font-awesome', name: 'user-o'}}
                                 leftIconContainerStyle={{paddingRight: '10'}}
-                                onChangeText={(comment) => this.setState({ comment: comment })}
-                                value
+                                onChangeText={(author) => this.setState({ author: author })}
+                                value={this.state.author}
+                            />
+                            <Input 
+                                placeholder='Comment'
+                                leftIcon={{type: 'font-awesome', name: 'comment-o'}}
+                                leftIconContainerStyle={{paddingRight: '10'}}
+                                onChangeText={(text) => this.setState({ text: text })}
+                                value={this.state.text}
                             />
                             <View style={{margin: 10}} >
                                 <Button
                                     onPress={() => {
                                         this.handleComment(campsiteId);
+                                        this.resetForm();
                                     }}
                                     color='#808080'
                                     title='Submit'
@@ -173,6 +177,7 @@ class CampsiteInfo extends Component {
                                 <Button
                                     onPress={() => {
                                         this.toggleModal();
+                                        this.resetForm();
                                     }}
                                     color='#808080'
                                     title='Cancel'
